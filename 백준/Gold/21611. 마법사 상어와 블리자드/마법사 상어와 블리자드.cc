@@ -1,4 +1,6 @@
 #include <bits/stdc++.h>
+#define fastio ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
+#define pb push_back
 #define pii pair<int, int>
 #define x first
 #define y second
@@ -9,11 +11,9 @@ int N, M, Arr[51][51]{ 0 }, d, s;
 
 deque<int> DQ;
 
-int ans_arr[4]{ 0 };
-
 vector<pii> info;
 
-int dir_info[5]{ 0 };
+int ans_a[4]{ 0 };
 
 void destroy(int i)
 {
@@ -48,9 +48,7 @@ void init()
 
 	while (true)
 	{
-		int chk = Idx - 1;
-
-		int dir = chk % 4;
+		int dir = (Idx - 1) % 4;
 
 		int distance = (Idx + 1) / 2;
 
@@ -59,7 +57,7 @@ void init()
 			s_x += dx[dir];
 			s_y += dy[dir];
 
-			DQ.push_back(Arr[s_x][s_y]);
+			DQ.pb(Arr[s_x][s_y]);
 
 			if (s_x == 0 && s_y == 0)
 				break;
@@ -85,18 +83,18 @@ void empty_move()
 			cnt++;
 			continue;
 		}
-		cpy.push_back(DQ[i]);
+		cpy.pb(DQ[i]);
 	}
 
 	while (cnt--)
-		cpy.push_back(0);
+		cpy.pb(0);
 
 	DQ = cpy;
 }
 
 bool real()
 {
-	bool ans = false;
+	bool ret = false;
 
 	int fir = DQ[0], cnt = 1;
 
@@ -108,8 +106,8 @@ bool real()
 		{
 			if (cnt >= 4)
 			{
-				ans_arr[fir] += cnt;
-				ans = true;
+				ans_a[fir] += cnt;
+				ret = true;
 				for (int j = i - 1; cnt > 0; cnt--, j--)
 					DQ[j] = -1;
 			}
@@ -118,7 +116,7 @@ bool real()
 		}
 	}
 
-	return ans;
+	return ret;
 }
 
 void explode()
@@ -147,8 +145,8 @@ void change()
 
 		else
 		{
-			if ((int)cpy.size() < N * N - 1) cpy.push_back(cnt);
-			if ((int)cpy.size() < N * N - 1) cpy.push_back(fir);
+			if ((int)cpy.size() < N * N - 1) cpy.pb(cnt);
+			if ((int)cpy.size() < N * N - 1) cpy.pb(fir);
 			
 			fir = DQ[i];
 			cnt = 1;
@@ -156,7 +154,7 @@ void change()
 	}
 
 	while ((int)cpy.size() < N * N - 1)
-		cpy.push_back(0);
+		cpy.pb(0);
 
 	DQ = cpy;
 }
@@ -171,13 +169,13 @@ void Input()
 			cin >> Arr[i][j];
 	}
 
-	dir_info[1] = 3, dir_info[2] = 1, dir_info[3] = 0, dir_info[4] = 2;
+	int dir_info[]{-1, 3, 1, 0, 2};
 
 	for (int i = 0; i < M; i++)
 	{
 		cin >> d >> s;
 
-		info.push_back({ dir_info[d], s});
+		info.pb({ dir_info[d], s});
 	}
 
 	s_x = N / 2, s_y = N / 2;
@@ -185,6 +183,8 @@ void Input()
 
 int main()
 {
+	fastio;
+
 	Input();
 
 	init();
@@ -196,5 +196,5 @@ int main()
 		change();
 	}
 
-	cout << 1 * ans_arr[1] + 2 * ans_arr[2] + 3 * ans_arr[3] << '\n';
+	cout << 1 * ans_a[1] + 2 * ans_a[2] + 3 * ans_a[3] << '\n';
 }
