@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int solution(int n, int m, vector<int> section) {
+int solution(int n, int m, vector<int> section) { // 그리디 + 스택
     int answer = 0;
     
     while(true)
