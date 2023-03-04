@@ -9,9 +9,11 @@ vector<pii> V;
 
 int cnt;
 
+// 실수한 부분! --> 16:58분에서 10분 증가 시 17:08이 되야 한다는 점을 잊지 말자.
+
 priority_queue<int, vector<int>, greater<int>> PQ;
 
-int solution(vector<vector<string>> book_time) {
+int solution(vector<vector<string>> book_time) { // 그리디 + 우선순위 큐
     
     for (int i = 0; i < (int)book_time.size(); i++)
     {
@@ -21,14 +23,17 @@ int solution(vector<vector<string>> book_time) {
         
         string conv_end = end.substr(0, 2) + end.substr(3, 2);
         
-        int chk_end = stoi(conv_end);
+        int c_end = stoi(conv_end);
+        
         
         if (end.substr(3, 2) >= "50")
-            chk_end += 50;
+            c_end += 50;
         else
-            chk_end += 10;
+            c_end += 10;
         
-        V.push_back({stoi(conv_start), chk_end});
+        // 실수한 부분! --> 16:58분에서 10분 증가 시 17:08이 되야 한다는 점을 잊지 말자.
+        
+        V.push_back({stoi(conv_start), c_end});
     }
     
     // 959
