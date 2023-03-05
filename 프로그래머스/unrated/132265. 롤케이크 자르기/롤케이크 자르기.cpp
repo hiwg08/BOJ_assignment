@@ -24,7 +24,6 @@ int solution(vector<int> topping) { // bruteforcing + implementation
     {
         if (sister[V[i - 1]] == 0)
             sister_cnt++;
-        
         sister[V[i - 1]]++;
         
         if (brother[V[i - 1]] == 1)
