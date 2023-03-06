@@ -4,7 +4,7 @@
 
 using namespace std;
 
-vector<ll> solution(vector<ll> numbers) {
+vector<ll> solution(vector<ll> numbers) { // bitmask + greedy
     vector<ll> answer;
     
     for (ll i = 0; i < (ll)numbers.size(); i++)
@@ -13,16 +13,12 @@ vector<ll> solution(vector<ll> numbers) {
         
         ll j = 0;
         
-        for (j = 0;; j++)
-        {
-            if (!(standard & (o << j)))
-            { 
-                standard += (o << j);
-                break;
-            }
-        }
+        while(standard & (o << j))
+            j++;
         
-        if (j - 1 >= 0 && standard & (o << (j - 1)))
+        standard += (o << j);
+        
+        if (j - 1 >= 0)
             standard -= (o << (j - 1));
         
         answer.push_back(standard);
