@@ -1,31 +1,39 @@
 #include <bits/stdc++.h>
-#define fastio ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
 using namespace std;
 
-int N, M, Base[301]{ 0 }, Arr[301][21]{ 0 }, DP[301][301]{ 0 }, Ans[21][301]{ 0 };
+int N, M;
 
-int solve(int Money, int Idx)
+int cost[301]{ 0 };
+
+int profit[21][301]{ 0 };
+
+int DP[21][301]{ 0 };
+
+int trace[21][301]{ 0 };
+
+int solve(int Idx, int money) // Idx : 기업임.
 {
-	if (Idx == M)
+	if (Idx >= M)
 		return 0;
 
-	int& ret = DP[Money][Idx];
+	int& ret = DP[Idx][money];
 
 	if (ret != -1)
 		return ret;
 
-	ret = solve(Money, Idx + 1);
+	ret = solve(Idx + 1, money); // 현재 기업을 선택하지 않고 넘기는 경우의 수
 
 	for (int i = 0; i < N; i++)
 	{
-		if (Money - Base[i] >= 0)
+		if (money - cost[i] >= 0) // 이 때만 값 갱신 해야한다.
 		{
-			int T1 = solve(Money - Base[i], Idx + 1) + Arr[i][Idx];
-			if (ret < T1)
+			int T1 = solve(Idx + 1, money - cost[i]) + profit[Idx][i];
+
+			if (T1 > ret) // max일 때 적용
 			{
 				ret = T1;
-				Ans[Idx][Money] = Base[i];
+				trace[Idx][money] = cost[i];
 			}
 		}
 	}
@@ -33,30 +41,32 @@ int solve(int Money, int Idx)
 	return ret;
 }
 
+void reconstruct(int Idx, int params)
+{
+	if (Idx >= M)
+		return;
+
+	cout << trace[Idx][params] << " ";
+
+	reconstruct(Idx + 1, params - trace[Idx][params]);
+}
+
 int main()
 {
-	fastio;
-
 	cin >> N >> M;
-	
+
 	for (int i = 0; i < N; i++)
 	{
-		cin >> Base[i];
+		cin >> cost[i];
+
 		for (int j = 0; j < M; j++)
-			cin >> Arr[i][j];
+			cin >> profit[j][i];
 	}
 
 	memset(DP, -1, sizeof(DP));
 
-	int Price = solve(N, 0);
+	cout << solve(0, N) << '\n';
 
-	cout << Price << '\n';
-
-	int total = N;
-
-	for (int i = 0; i < M; i++)
-	{
-		cout << Ans[i][total] << " ";
-		total -= Ans[i][total];
-	}
+	reconstruct(0, N);
+	// 각 기업에 투자한 액수임
 }
