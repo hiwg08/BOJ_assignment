@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#define fastio ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 #define ll long long
 #define pll pair<ll, ll>
 #define x first
@@ -12,15 +13,17 @@ vector<pll> V;
 
 vector<ll> bag;
 
-priority_queue<ll, vector<ll>, greater<ll>> PQ;
+multiset<ll> ms;
 
 bool cmp(pll a, pll b)
 {
 	return a.x > b.x;
 }
 
-int main()
+int main() // greedy, data structure, sorting
 {
+	fastio;
+
 	cin >> N >> K; V.resize(N); bag.resize(K);
 
 	for (auto& iv : V)
@@ -39,26 +42,22 @@ int main()
 	{
 		if (bag_point >= (ll)bag.size())
 		{
-			PQ.push(V[i].y);
-			PQ.pop();
-		} // 여기서부터는 자유
+			ms.insert(V[i].y);
+			ms.erase(ms.begin());
+		}
 		else
 		{
-			PQ.push(V[i].y);
+			ms.insert(V[i].y);
 			
 			if (bag[bag_point] >= V[i].x)
 				bag_point++;
-
 			else
-				PQ.pop();
+				ms.erase(ms.begin());
 		}
 	}
 
-	while (!PQ.empty())
-	{
-		total += PQ.top();
-		PQ.pop();
-	}
+	for (auto e : ms)
+		total += e;
 
 	cout << total << '\n';
 }
