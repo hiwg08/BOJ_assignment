@@ -4,16 +4,16 @@ using namespace std;
 
 int N;
 
-int DP[60][60][60]{ 0 };
+int DP[60][60]{ 0 };
 
 vector<int> A, B;
 
-int solve(int a, int b, int last)
+int solve(int a, int b)
 {
 	if (a >= (int)A.size())
 		return 0;
 
-	int& ret = DP[a][b][last];
+	int& ret = DP[a][b];
 
 	if (ret != -1)
 		return ret;
@@ -21,17 +21,17 @@ int solve(int a, int b, int last)
 	ret = 0;
 
 	if (A[a] > B[b])
-		ret += solve(a + 1, b + 1, last) + 2;
+		ret += solve(a + 1, b + 1) + 2;
 
 	else if (A[a] == B[b])
 	{
-		int L = solve(a + 1, b, last - 1);
-		int R = solve(a + 1, b + 1, last) + 1;
+		int L = solve(a + 1, b);
+		int R = solve(a + 1, b + 1) + 1;
 
 		ret += max(L, R);
 	}
 	else
-		ret += solve(a + 1, b, last - 1);
+		ret += solve(a + 1, b);
 
 	return ret;
 }
@@ -52,5 +52,5 @@ int main()
 
 	memset(DP, -1, sizeof(DP));
 
-	cout << solve(0, 0, N - 1) << '\n';
+	cout << solve(0, 0) << '\n';
 }
