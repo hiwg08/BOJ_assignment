@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#define fastio ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
 using namespace std;
 
@@ -10,6 +11,8 @@ vector<int> V, ans;
 
 int main()
 {
+	fastio;
+
 	cin >> N; V.resize(N);
 
 	for (auto& iv : V)
