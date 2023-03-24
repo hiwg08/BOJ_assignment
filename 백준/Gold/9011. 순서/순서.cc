@@ -15,9 +15,6 @@ void solve(int Idx)
 	if (Idx == -1)
 		return;
 
-	if (Arr[Idx] >= Idx + 1)
-		return;
-
 	int cnt = 0;
 	
 	for (int i = 1; i <= Arr[Idx]; i++)
@@ -39,6 +36,7 @@ void solve(int Idx)
 			Vis[i] = true;
 			V.push_back(i);
 			solve(Idx - 1);
+			return;
 		}
 	}
 }
