@@ -35,4 +35,4 @@ int main()
 
 // DP[C] : C라는 비용을 갖고 소거할 수 있는 메모리의 최댓값
 
-// time complexity : order(10000 * 100) = order(10000000)
+// time complexity : order(10000 * 100) = order(1000000)
