@@ -4,9 +4,9 @@ using namespace std;
 
 int N, S;
 
-int DP[51][51][1300][2]{ 0 };
+int DP[51][51][1300]{ 0 };
 
-int solve(int pre, int parent, int route, int select)
+int solve(int pre, int parent, int route)
 {
 	if (pre == N)
 	{
@@ -15,28 +15,16 @@ int solve(int pre, int parent, int route, int select)
 		return 0;
 	}
 
-	int& ret = DP[pre][parent][route][select];
+	int& ret = DP[pre][parent][route];
 
 	if (ret != -1)
 		return ret;
 
-	if (parent == 1)
-	{
-		if (solve(pre + 1, parent, route + pre - parent, 0))
-			return ret = 1;
+	if (solve(pre + 1, parent, route + pre - parent + min(1, parent - 1)))
+		return ret = 1;
 
-		if (solve(pre + 1, pre, route + 1, 1))
-			return ret = 1;
-	}
-
-	else
-	{
-		if (solve(pre + 1, parent, route + pre - parent + select, 1))
-			return ret = 1;
-
-		if (solve(pre + 1, pre, route + 1, 1))
-			return ret = 1;
-	}
+	if (solve(pre + 1, pre, route + 1))
+		return ret = 1;
 
 	return ret = 0;
 }
@@ -47,5 +35,5 @@ int main()
 
 	memset(DP, -1, sizeof(DP));
 
-	cout << solve(2, 1, 0, 0);
+	cout << solve(2, 1, 0);
 }
