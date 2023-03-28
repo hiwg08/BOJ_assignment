@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#define fastio ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 #define pii pair<int, int>
 #define x first
 #define y second
@@ -7,11 +8,9 @@ using namespace std;
 
 int N, K;
 
-deque<int> Arr;
+deque<int> Arr, ans;
 
 deque<pii> S;
-
-deque<int> ans;
 
 void update_query(int order, int num)
 {
@@ -23,6 +22,8 @@ void update_query(int order, int num)
 
 int main()
 {
+	fastio;
+
 	cin >> N; Arr.resize(N);
 
 	for (int i = 0; i < N; i++)
