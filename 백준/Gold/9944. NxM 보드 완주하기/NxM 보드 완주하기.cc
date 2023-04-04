@@ -1,112 +1,108 @@
 #include <bits/stdc++.h>
-#define fastio ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
 using namespace std;
 
-int N, M, hole, val = INT_MAX;
+int N, M, hole, val = INT_MAX, s_x, s_y;
+
+bool vis[31][31]{ 0 };
 
 char Arr[31][31]{ 0 };
-
-int Vis[31][31]{ 0 };
 
 int dx[]{ 1, 0, -1, 0 };
 int dy[]{ 0, 1, 0, -1 };
 
-void solve(int x, int y, int move, int total)
+bool check_monge(int nx, int ny)
 {
-	int cnt = 0;
-
-	if (Vis[x][y] == 0)
-		cnt++;
-
-	if (total + cnt == hole)
+	if (nx < 0 || ny < 0 || nx >= N || ny >= M)
+		return false;
+	else
 	{
-		val = min(val, move);
-		return;
+		if (vis[nx][ny] || Arr[nx][ny] == '*')
+			return false;
 	}
 
-	Vis[x][y]++;
-
-	for (int dir = 0; dir < 4; dir++)
-	{
-		int nx = x, ny = y;
-
-		while (true)
-		{
-			nx += dx[dir], ny += dy[dir];
-			if (nx < 0 || ny < 0 || nx >= N || ny >= M)
-				break;
-			if (Arr[nx][ny] == '*')
-				break;
-			if (Vis[nx][ny] >= 1)
-				break;
-			Vis[nx][ny]++;
-			cnt++;
-		}
-
-		nx -= dx[dir], ny -= dy[dir];
-
-		if (nx != x || ny != y)
-			solve(nx, ny, move + 1, total + cnt);
-
-		while (true)
-		{
-			if (nx == x && ny == y)
-				break;
-			Vis[nx][ny]--, cnt--;
-			nx -= dx[dir], ny -= dy[dir];
-		}
-	}
-
-	Vis[x][y]--;
+	return true;
 }
 
-void Input()
+void solve(int px, int py, int dir, int cnt, int rotate)
 {
-	cin >> N >> M;
+	vis[px][py] = true;
 
-	if (cin.eof())
-		exit(0);
+	int nx = px + dx[dir], ny = py + dy[dir];
 
-	memset(Arr, 0, sizeof(Arr));
-
-	memset(Vis, 0, sizeof(Vis));
-
-	hole = 0, val = INT_MAX;
-
-	for (int i = 0; i < N; i++)
+	if (!check_monge(nx, ny)) // 다음 칸으로 이동하지 못 할때 --> 방향 틀어야됨
 	{
-		string S; cin >> S;
-
-		for (int j = 0; j < M; j++)
+		for (int i = 0; i < 4; i++)
 		{
-			Arr[i][j] = S[j];
-			if (S[j] == '.') hole++;
+			if (i == dir)
+				continue;
+
+			int ni = px + dx[i], nj = py + dy[i];
+
+			if (ni < 0 || nj < 0 || ni >= N || nj >= M)
+				continue;
+
+			if (vis[ni][nj])
+				continue;
+
+			if (Arr[ni][nj] == '*')
+				continue;
+
+			solve(ni, nj, i, cnt + 1, rotate + 1);
 		}
 	}
+	else
+		solve(nx, ny, dir, cnt + 1, rotate);
+
+	if (cnt == hole)
+		px == s_x && py == s_y ? val = 0 : val = min(val, rotate);
+
+	vis[px][py] = false;
 }
 
 int main()
 {
-	fastio;
-
 	int Idx = 0;
 
 	while (true)
 	{
-		Input();
+		cin >> N >> M;
+
+		if (cin.eof())
+			break;
+
+		hole = 0, val = INT_MAX;
+
+		memset(vis, false, sizeof(vis));
 
 		for (int i = 0; i < N; i++)
 		{
-			for (int j = 0; j < N; j++)
+			for (int j = 0; j < M; j++)
 			{
+				cin >> Arr[i][j];
+
 				if (Arr[i][j] == '.')
-					solve(i, j, 0, 0);
+					hole++;
 			}
 		}
 
-		cout << "Case " << ++Idx << ": ";
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < M; j++)
+			{
+				if (Arr[i][j] == '.')
+				{
+					s_x = i, s_y = j;
+					for (int k = 0; k < 4; k++)
+						solve(i, j, k, 1, 1);
+						
+				}
+			}
+		}
 
-		val == INT_MAX ? cout << -1 << '\n' : cout << val << '\n';
+		if (val == INT_MAX)
+			val = -1;
+
+		cout << "Case " << ++Idx << ": " << val << '\n';
 	}
 }
