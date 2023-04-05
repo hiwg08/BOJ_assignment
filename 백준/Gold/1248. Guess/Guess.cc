@@ -4,7 +4,7 @@ using namespace std;
 
 int N;
 
-string S;
+char S[101];
 
 char Map[11][11]{ 0 };
 
@@ -44,8 +44,7 @@ void solve(int Idx) // 오른쪽으로 보면서 탐색
 	if (Idx == N)
 	{
 		for (auto e : V)
-			cout << e << " ";
-		cout << '\n';
+			printf("%d ", e);
 		exit(0);
 	}
 
@@ -76,9 +75,9 @@ void solve(int Idx) // 오른쪽으로 보면서 탐색
 
 int main()
 {
-	cin >> N;
+	scanf("%d", &N);
 
-	cin >> S;
+	scanf("%s", S);
 
 	int Idx = 0;
 
