@@ -19,7 +19,7 @@ ll solve(ll Idx, ll remain)
 	if (ret != -1)
 		return ret;
 
-	ret = INT_MAX;
+	ret = 0;
 
 	ll diff = remain - Arr[Idx]; // 남는 공간을 의미한다.
 
@@ -27,9 +27,9 @@ ll solve(ll Idx, ll remain)
 
 	if (Idx + 1 < N)
 	{
+		ret = solve(Idx + 1, M) + mul;
 		if (diff - 1 - Arr[Idx + 1] >= 0)
-			ret = solve(Idx + 1, diff - 1);
-		ret = min(ret, solve(Idx + 1, M) + mul);
+			ret = min(ret, solve(Idx + 1, diff - 1));
 	}
 
 	else
