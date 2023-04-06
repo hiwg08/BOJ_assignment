@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#define fastio ios_base::sync_with_stdio(false); cin.tie(0);
 #define ll long long
 #define pll pair<ll, ll>
 #define x first
@@ -28,6 +29,8 @@ bool check(ll a, ll b)
 
 int main()
 {
+	fastio;
+
 	cin >> N;
 
 	for (ll i = 0, a; i < N; i++)
@@ -50,11 +53,7 @@ int main()
 		{
 			ll ret = gcd(cha, ori[i]);
 
-			ll L = cha / ret, R = ori[i] / ret;
-
-			if (check(L, R))
-				continue;
-			else
+			if (!check(cha / ret, ori[i] / ret))
 			{
 				cout << "NO";
 				exit(0);
