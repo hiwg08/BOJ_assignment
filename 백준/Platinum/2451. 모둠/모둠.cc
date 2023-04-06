@@ -72,8 +72,6 @@ ll solve(ll Idx)
 	
 	for (ll i = Idx; i <= N; i++)
 	{
-		ll nxt = i;
-
 		sum += (i - Idx);
 
 		ll group_member = calc_1(Idx, i);
@@ -86,7 +84,7 @@ ll solve(ll Idx)
 		{
 			ret = solve(i + 1) + diff + distance_per;
 
-			trace[Idx] = i;
+			trace[Idx] = i + 1;
 		}
 	}
 
@@ -100,9 +98,9 @@ void reconstruct(ll Idx)
 	if (Idx >= N + 1)
 		return;
 
-	ans.push_back(trace[Idx] - Idx + 1);
+	ans.push_back(trace[Idx] - Idx);
 
-	reconstruct(trace[Idx] + 1);
+	reconstruct(trace[Idx]);
 }
 
 int main()
