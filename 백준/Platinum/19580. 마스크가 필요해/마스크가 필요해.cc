@@ -13,7 +13,7 @@ vector<pll> V;
 
 vector<pll> tmp;
 
-multiset<pll> ms;
+set<pll> ms;
 
 bool cmp(pll a, pll b)
 {
