@@ -82,9 +82,9 @@ int main()
 
 	solve();
 
-	for (int i = 1; i <= 160; i++)
+	for (int i = 1; i <= 40; i++)
 	{
-		for (int j = i; j <= 160; j++)
+		for (int j = i; j <= 80 - i; j++)
 		{
 			int L = i, R = j;
 
