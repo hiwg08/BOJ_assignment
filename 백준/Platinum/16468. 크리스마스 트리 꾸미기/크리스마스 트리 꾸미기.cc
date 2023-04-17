@@ -4,7 +4,7 @@
 
 using namespace std;
 
-ll N, L;
+ll N, M;
 
 ll DP[301][301][2]{ 0 };
 
@@ -21,9 +21,7 @@ ll solve(ll size, ll height, ll state)
 
 	if (size == 1)
 	{
-		if (height >= 2 && state == 0)
-			return 1;
-		if (height == 1 && state == 1)
+		if (height == 1)
 			return 1;
 		return 0;
 	}
@@ -32,12 +30,12 @@ ll solve(ll size, ll height, ll state)
 
 	if (ret != -1)
 		return ret;
-	
-	if (state == 0) // 결국 0인 것도... 1인 것의 '총 합'이 되니까... 그러면 1인 것만 신경 써주면 될라나?
+
+	if (state == 0)
 	{
 		ll nu = 0;
 
-		for (ll i = height - 1; i >= 1; i--)
+		for (ll i = height; i >= 1; i--)
 			add_mod(nu, solve(size, i, 1));
 
 		return ret = nu;
@@ -51,34 +49,45 @@ ll solve(ll size, ll height, ll state)
 
 		if (L == 0)
 		{
-			ll R1 = solve(R, height - 1, 1);
+			ll R1 = 0;
+
+			if (R >= height - 1)
+				R1 = solve(R, height - 1, 1);
 
 			add_mod(ret, R1);
 		}
 		else if (R == 0)
 		{
-			ll L1 = solve(L, height - 1, 1);
-		
+			ll L1 = 0;
+
+			if (L >= height - 1)
+				L1 = solve(L, height - 1, 1);
+
 			add_mod(ret, L1);
 		}
 		else
 		{
-			ll L1 = solve(L, height - 1, 1);
-			ll L2 = solve(L, height - 1, 0);
-			ll R1 = solve(R, height - 1, 1);
-			ll R2 = solve(R, height - 1, 0);
-			
-			ll A = ((L2 % MOD) * (R1 % MOD)) % MOD;
-			ll B = ((L1 % MOD) * (R2 % MOD)) % MOD;
-			ll C = ((L1 % MOD) * (R1 % MOD)) % MOD;
+			ll L0 = 0, R0 = 0, L1 = 0, R1 = 0;
 
-			ll nxt = 0;
+			if (R >= height - 1)
+				R1 = solve(R, height - 1, 1);
+			R0 = solve(R, min(height - 1, (ll)R), 0);
 
-			add_mod(nxt, A);
-			add_mod(nxt, B);
-			add_mod(nxt, C);
+			if (L >= height - 1)
+				L1 = solve(L, height - 1, 1);
+			L0 = solve(L, min(height - 1, (ll)L), 0);
 
-			ret += nxt;
+			ll fir = ((R0 % MOD) * (L0 % MOD)) % MOD;
+
+			ll sec = ((R0 % MOD) - (R1 % MOD) + MOD) % MOD;
+
+			ll thi = ((L0 % MOD) - (L1 % MOD) + MOD) % MOD;
+
+			ll fou = ((sec % MOD) * (thi % MOD)) % MOD;
+
+			ll ans = ((fir % MOD) - (fou % MOD) + MOD) % MOD;
+
+			add_mod(ret, ans);
 		}
 	}
 
@@ -87,9 +96,9 @@ ll solve(ll size, ll height, ll state)
 
 int main()
 {
-	cin >> N >> L;
+	cin >> N >> M;
 
 	memset(DP, -1, sizeof(DP));
 
-	cout << solve(N, L, 1);
+	cout << solve(N, M, 1);
 }
