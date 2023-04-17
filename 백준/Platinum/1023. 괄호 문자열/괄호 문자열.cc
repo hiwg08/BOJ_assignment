@@ -56,7 +56,6 @@ void reconstruct(ll L, ll R, ll round, ll state, ll kth)
 	if (state == 1) // 여긴 진짜 아무거나 다 넣어도 된다.
 	{
 		ll Q = solve(L + 1, R, round, state);
-		ll W = solve(L, R + 1, round, state);
 
 		if (kth <= Q)
 		{
@@ -76,7 +75,6 @@ void reconstruct(ll L, ll R, ll round, ll state, ll kth)
 		if (round >= 1)
 		{
 			ll Q = solve(L + 1, R, round + 1, state);
-			ll W = solve(L, R + 1, round - 1, state);
 
 			if (kth <= Q)
 			{
@@ -93,7 +91,6 @@ void reconstruct(ll L, ll R, ll round, ll state, ll kth)
 		else
 		{
 			ll Q = solve(L + 1, R, round + 1, state);
-			ll W = solve(L, R + 1, round, 1);
 
 			if (kth <= Q)
 			{
