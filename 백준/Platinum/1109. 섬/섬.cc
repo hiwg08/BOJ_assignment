@@ -5,50 +5,50 @@
 
 using namespace std;
 
-int N, M, cnt, ori;
+int N, M, mask, mask_ori; // N은 행, M은 열
 
 char Arr[51][51]{ 0 };
 
 int vis[51][51]{ 0 };
 
-int ans[3001]{ 0 };
+bool ano_vis[3000]{ 0 };
 
 vector<pii> start[3000];
 
-int ano_vis[3001]{ 0 };
+vector<int> tree[3000];
 
-int dx[]{ 1, 0, -1, 0, 1, -1, -1, 1 };
-int dy[]{ 0, 1, 0, -1, 1, 1, -1, -1 };
+int ans[3001]{ 0 };
 
-vector<int> V[3001];
+int dx[]{ 1, 0, -1, 0, -1, -1, 1, 1 };
+int dy[]{ 0, 1, 0, -1, 1, -1, 1, -1 };
 
 int dfs(int Idx)
 {
 	ano_vis[Idx] = true;
-	
-	int ma = 0;
 
-	for (int i = 0; i < (int)V[Idx].size(); i++) 
+	bool chk = false;
+
+	int ret = 0;
+
+	for (auto e : tree[Idx])
 	{
-		int T1 = dfs(V[Idx][i]);
-
-		ma = max(ma, T1);
+		chk = true;
+		ret = max(ret, dfs(e));
 	}
 
-	if (ans[ma] == -1)
-		ans[ma] = 0;
+	!chk ? ret = 0 : ret = ret + 1;
 
-	ans[ma]++;
+	if (ans[ret] == -1)
+		ans[ret] = 0;
 
-	return ma + 1;
+	ans[ret]++;
+
+	return ret;
 }
 
-void bfs(int px, int py, char c, int num)
+void bfs(int px, int py, int d, char same)
 {
-	vis[px][py] = cnt;
-
-	if (cnt > 0)
-		start[cnt].push_back({ px, py });
+	vis[px][py] = mask;
 
 	queue<pii> Q;
 
@@ -59,24 +59,23 @@ void bfs(int px, int py, char c, int num)
 		pii T1 = Q.front();
 		Q.pop();
 
-		for (int dir = 0; dir < num; dir++)
+		if (mask > 0)
+			start[mask].push_back({ T1.x, T1.y });
+
+		for (int dir = 0; dir < d; dir++)
 		{
-			int nx = T1.x + dx[dir];
-			int ny = T1.y + dy[dir];
+			int nx = T1.x + dx[dir], ny = T1.y + dy[dir];
 
 			if (nx < 0 || ny < 0 || nx >= N || ny >= M)
 				continue;
 
-			if (vis[nx][ny] >= 1 || vis[nx][ny] < 0)
+			if (vis[nx][ny] != 0)
 				continue;
 
-			if (Arr[nx][ny] != c)
+			if (Arr[nx][ny] != same)
 				continue;
 
-			vis[nx][ny] = cnt;
-
-			if (cnt > 0)
-				start[cnt].push_back({ nx, ny });
+			vis[nx][ny] = mask;
 
 			Q.push({ nx, ny });
 		}
@@ -85,9 +84,9 @@ void bfs(int px, int py, char c, int num)
 
 set<int> make_sima(int px, int py, int standard)
 {
-	set<int> s;
+	vis[px][py] = mask;
 
-	vis[px][py] = cnt;
+	set<int> ret;
 
 	queue<pii> Q;
 
@@ -98,37 +97,41 @@ set<int> make_sima(int px, int py, int standard)
 		pii T1 = Q.front();
 		Q.pop();
 
+		vis[T1.x][T1.y] = mask;
+
 		for (int dir = 0; dir < 4; dir++)
 		{
-			int nx = T1.x + dx[dir];
-			int ny = T1.y + dy[dir];
+			int nx = T1.x + dx[dir], ny = T1.y + dy[dir];
 
 			if (nx < 0 || ny < 0 || nx >= N || ny >= M)
 				continue;
 
-			if (vis[nx][ny] == standard || vis[nx][ny] < 0)
+			if (vis[nx][ny] > 0 && vis[nx][ny] != standard)
+			{
+				ret.insert(vis[nx][ny]);
 				continue;
+			}
 
-			if (vis[nx][ny] != standard && vis[nx][ny] > 0)
-				s.insert(vis[nx][ny]);
+			if (vis[nx][ny] != 0)
+				continue;
 
 			if (Arr[nx][ny] != '.')
 				continue;
 
-			vis[nx][ny] = cnt;
+			vis[nx][ny] = mask;
 
 			Q.push({ nx, ny });
 		}
 	}
 
-	return s;
+	return ret;
 }
 
-void is_cycle(int num)
+void is_cycle(int standard)
 {
-	for (int i = 0; i < (int)start[num].size(); i++)
+	for (auto e : start[standard])
 	{
-		int ni = start[num][i].x, nj = start[num][i].y;
+		auto ni = e.x, nj = e.y;
 
 		for (int dir = 0; dir < 8; dir++)
 		{
@@ -137,13 +140,13 @@ void is_cycle(int num)
 			if (nx < 0 || ny < 0 || nx >= N || ny >= M)
 				continue;
 
-			if (vis[nx][ny] == 0) // 이건 확실히 둘러쌓인 곳.
-			{
-				set<int> q = make_sima(nx, ny, num);
+			if (vis[nx][ny] != 0)
+				continue;
 
-				for (auto e : q)
-					V[num].push_back(e);
-			}
+			set<int> ss = make_sima(nx, ny, standard);
+
+			for (auto e : ss)
+				tree[standard].push_back(e);
 		}
 	}
 }
@@ -156,67 +159,60 @@ void input()
 	{
 		for (int j = 0; j < M; j++)
 			cin >> Arr[i][j];
-	}
+	} // 입력 on
 
 	for (int i = 0; i < N; i++)
 	{
 		for (int j = 0; j < M; j++)
 		{
-			if (!vis[i][j] && Arr[i][j] == 'x')
+			if (vis[i][j] == 0 && Arr[i][j] == 'x')
 			{
-				cnt++;
-				bfs(i, j, 'x', 8);
+				mask++;
+				bfs(i, j, 8, 'x');
 			}
 		}
-	}
+	} // 1. 우선 섬들을 flood_fill로 채워주자.
 
-	ori = cnt;
+	mask_ori = mask;
 
-	cnt = -9999;
+	mask = -1;
 
-	// N, M
-
-	for (int i = 0; i < M; i++)
+	for (int i = 0; i < M; i++) // 0행, 마지막 행을 기준
 	{
-		if (!vis[0][i] && Arr[0][i] == '.')
-			bfs(0, i, '.', 4);
-		if (!vis[N - 1][i] && Arr[N - 1][i] == '.')
-			bfs(N - 1, i, '.', 4);
-	}
+		if (vis[0][i] == 0 && Arr[0][i] == '.') // 외곽 
+			bfs(0, i, 4, '.');
+		if (vis[N - 1][i] == 0 && Arr[N - 1][i] == '.') // 외곽 
+			bfs(N - 1, i, 4, '.');
+	} // 2. 0행, 마지막 행에서, 맵에서의 가장 '최외각'인 곳을 전부 flood_fill
 
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < N; i++) // 0열, 마지막 열을 기준
 	{
-		if (!vis[i][0] && Arr[i][0] == '.')
-			bfs(i, 0, '.', 4);
-		if (!vis[i][M - 1] && Arr[i][M - 1] == '.')
-			bfs(i, M - 1, '.', 4);
-	}
+		if (vis[i][0] == 0 && Arr[i][0] == '.') // 외곽 
+			bfs(i, 0, 4, '.');
+		if (vis[i][M - 1] == 0 && Arr[i][M - 1] == '.') // 외곽 
+			bfs(i, M - 1, 4, '.');
+	} // 3. 0열, 마지막 열에서, 맵에서의 가장 '최외각'인 곳을 전부 flood_fill
 }
 
 int main()
 {
 	input();
 
-	for (int i = 1; i <= ori; i++)
+	for (int i = 1; i <= mask_ori; i++)
 		is_cycle(i);
-
-	if (ori == 0)
-	{
-		cout << -1;
-		exit(0);
-	}
-		
-	int maxi = 0;
 
 	memset(ans, -1, sizeof(ans));
 
-	for (int i = 1; i <= ori; i++)
+	for (int i = 1; i <= mask_ori; i++) // 모든 섬에 대해 트리 dfs를 수행한다. 섬 A가 B를 감싸고 있다면, 섬 A - B는 부모 - 자식 관계라고 생각하는 거다. 
 	{
 		if (!ano_vis[i])
-			maxi = max(maxi, dfs(i));
+			dfs(i);
 	}
 
-	for (int i = 0; i < 3000; i++)
+	if (mask_ori == 0) // 섬이 하나라도 없다면 -1
+		cout << -1;
+
+	for (int i = 0; i <= 3000; i++)
 	{
 		if (ans[i] == -1)
 			break;

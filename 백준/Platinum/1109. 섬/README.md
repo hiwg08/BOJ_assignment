@@ -1,10 +1,10 @@
-# [Platinum IV] 섬 - 1109 
+# [Platinum III] 섬 - 1109 
 
 [문제 링크](https://www.acmicpc.net/problem/1109) 
 
 ### 성능 요약
 
-메모리: 2204 KB, 시간: 0 ms
+메모리: 2196 KB, 시간: 0 ms
 
 ### 분류
 
