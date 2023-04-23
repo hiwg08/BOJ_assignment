@@ -42,13 +42,13 @@ ll solve(ll start, ll end, ll cmd_a, ll cmd_b, ll nu_sum, ll posi) // 마치 세
 			continue;
 		}
 
-		if (cmd_b <= nxt)
+		if (cmd_b < nxt)
 		{
 			ret = max(ret, solve(pre, nxt, max(cmd_a, pre), min(cmd_b, nxt), nu_sum + i, pre)); // ***이미 pre에서 posi를 더해주고 있다.*** 그래서 pre + posi 이렇게 안 해도 되고, 다음 위치는 pre 그 자체이다. ㅇㅇ
 			continue;
 		}	
 
-		if (cmd_a >= pre)
+		if (cmd_a > pre)
 			ret = max(ret, solve(pre, nxt, max(cmd_a, pre), min(cmd_b, nxt), nu_sum + i, pre)); // 시작 구간은 max(cmd_a, pre), 종료 구간은 min(cmd_b, nxt)
 		// 위의 if문 2개는 한 쪽만 걸치는 경우.
 		// 구간 별 처리 방법은 따로 정리 해놓는 편이 좋겠다.
