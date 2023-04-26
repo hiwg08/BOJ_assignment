@@ -27,16 +27,16 @@ int solve(int Idx, int before)
 		if (cnt == 1)
 		{
 			for (int i = 149; i >= 0; i--)
-				DP[Idx][cnt][i + 1] = DP[e][T1][i];
+				DP[Idx][cnt][i + 1] = DP[e][T1][i]; // 미리 루트 노드 한 개를 추가해줘야 나중에 구현이 꼬이지 않는다.
 		}
 		else
 		{
-			for (int i = 150; i >= 0; i--) // DP e
+			for (int i = 150; i >= 0; i--) // DP e // 서브 트리에서 나오는 가짓수 중 ****반 드 시 하나는 선택해야 하는**** 냅색.... 너무 어려웠다.
 			{
 				for (int j = 150; j >= 0; j--) // DP Idx
 				{
 					if (i + j <= 150)
-						DP[Idx][cnt][i + j] = min(DP[Idx][cnt][i + j], DP[e][T1][i] + DP[Idx][cnt - 1][j]);
+						DP[Idx][cnt][i + j] = min(DP[Idx][cnt][i + j], DP[e][T1][i] + DP[Idx][cnt - 1][j]); // DP[Idx][cnt][i + j]하고 DP[e][T1][i], DP[Idx][cnt - 1][j]는 완전히 다른 배열이다. 따라서 배열의 값이 오염될 염려가 전혀 없다.
 				}
 			}
 		}
@@ -46,17 +46,13 @@ int solve(int Idx, int before)
 	
 	DP[Idx][cnt][1] = min(DP[Idx][cnt][1], cnt);
 
-	for (int i = 150; i >= 0; i--)
-	{
-		if (i == M)
-		{
-			if (Idx == 1)
-				total = min(total, DP[Idx][cnt][i]);
-			else
-				total = min(total, DP[Idx][cnt][i] + 1);
-		}
-	}
+	int comp = DP[Idx][cnt][M];
 
+	if (Idx != 1)
+		comp++;
+
+	total = min(total, comp);
+	
 	return cnt;
 }
 
