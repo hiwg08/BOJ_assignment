@@ -33,9 +33,6 @@ int solve(int Idx, int before)
 		{
 			for (int i = 150; i >= 0; i--) // DP e
 			{
-				if (DP[e][T1][i] < 99999 && i == M)
-					total = min(total, DP[e][T1][i] + 1); /// 단독 트리에서 나갈 때
-
 				for (int j = 150; j >= 0; j--) // DP Idx
 				{
 					if (i + j <= 150)
@@ -51,7 +48,7 @@ int solve(int Idx, int before)
 
 	for (int i = 150; i >= 0; i--)
 	{
-		if (DP[Idx][cnt][i] < 99999 && i == M)
+		if (i == M)
 		{
 			if (Idx == 1)
 				total = min(total, DP[Idx][cnt][i]);
@@ -91,7 +88,7 @@ int main()
 
 	solve(1, -1);
 
-	if (total == INT_MAX)
+	if (total >= 99999)
 		total = -1;
 
 	cout << total;
