@@ -1,8 +1,9 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <bitset>
 
 using namespace std;
 
-bitset<2000000> ms[153];
+bitset<1200000> ms[153];
 
 int N, K, total;
 
