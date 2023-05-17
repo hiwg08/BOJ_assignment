@@ -15,10 +15,6 @@ struct info
 
 ll precomp[100001]{ 0 };
 
-// sub에는 3, 6, 9 AND 3의 배수인 놈이 들어감
-
-// pa는 3, 6, 9가 들어가는 놈이 들어감
-
 info DP[100001][10]{ 0 };
 
 void at_()
@@ -47,82 +43,31 @@ ll chtoi(char c)
 
 void init()
 {
-	DP[1][1].r[0] = 1;
-	DP[1][1].r[1] = 1;
-	DP[1][1].r[2] = 0;
-	DP[1][1].pa = 0;
-	DP[1][1].sub[0] = 0;
-	DP[1][1].sub[1] = 0;
-	DP[1][1].sub[2] = 0;
+	DP[1][0].r[0] = 1;
 
-	DP[1][2].r[0] = 1;
-	DP[1][2].r[1] = 1;
-	DP[1][2].r[2] = 1;
-	DP[1][2].pa = 0;
-	DP[1][2].sub[0] = 0;
-	DP[1][2].sub[1] = 0;
-	DP[1][2].sub[2] = 0;
+	for (ll i = 1; i <= 9; i++)
+	{
+		for (ll k = 0; k < 3; k++)
+		{
+			DP[1][i].r[k] += DP[1][i - 1].r[k];
+			DP[1][i].sub[k] += DP[1][i - 1].sub[k];
+		}
 
-	DP[1][3].r[0] = 2;
-	DP[1][3].r[1] = 1;
-	DP[1][3].r[2] = 1;
-	DP[1][3].pa = 1;
-	DP[1][3].sub[0] = 1;
-	DP[1][3].sub[1] = 0;
-	DP[1][3].sub[2] = 0;
+		DP[1][i].pa += DP[1][i - 1].pa;
 
-	DP[1][4].r[0] = 2;
-	DP[1][4].r[1] = 2;
-	DP[1][4].r[2] = 1;
-	DP[1][4].pa = 1;
-	DP[1][4].sub[0] = 1;
-	DP[1][4].sub[1] = 0;
-	DP[1][4].sub[2] = 0;
+		DP[1][i].r[i % 3]++;
 
-	DP[1][5].r[0] = 2;
-	DP[1][5].r[1] = 2;
-	DP[1][5].r[2] = 2;
-	DP[1][5].pa = 1;
-	DP[1][5].sub[0] = 1;
-	DP[1][5].sub[1] = 0;
-	DP[1][5].sub[2] = 0;
-
-	DP[1][6].r[0] = 3;
-	DP[1][6].r[1] = 2;
-	DP[1][6].r[2] = 2;
-	DP[1][6].pa = 2;
-	DP[1][6].sub[0] = 2;
-	DP[1][6].sub[1] = 0;
-	DP[1][6].sub[2] = 0;
-
-	DP[1][7].r[0] = 3;
-	DP[1][7].r[1] = 3;
-	DP[1][7].r[2] = 2;
-	DP[1][7].pa = 2;
-	DP[1][7].sub[0] = 2;
-	DP[1][7].sub[1] = 0;
-	DP[1][7].sub[2] = 0;
-
-	DP[1][8].r[0] = 3;
-	DP[1][8].r[1] = 3;
-	DP[1][8].r[2] = 3;
-	DP[1][8].pa = 1;
-	DP[1][8].sub[0] = 2;
-	DP[1][8].sub[1] = 0;
-	DP[1][8].sub[2] = 0;
-
-	DP[1][9].r[0] = 4;
-	DP[1][9].r[1] = 3;
-	DP[1][9].r[2] = 3;
-	DP[1][9].pa = 3;
-	DP[1][9].sub[0] = 3;
-	DP[1][9].sub[1] = 0;
-	DP[1][9].sub[2] = 0;
-
-	for (ll i = 0; i < 3; i++)
-		DP[1][0].r[i] = 3;
+		if (i % 3 == 0)
+		{
+			DP[1][i].pa++;
+			DP[1][i].sub[0]++;
+		}
+	}
 
 	DP[1][0].r[0] = 4;
+
+	for (ll i = 1; i < 3; i++)
+		DP[1][0].r[i] = 3;
 
 	DP[1][0].pa = 3;
 
@@ -131,10 +76,10 @@ void init()
 	for (ll i = 2; i <= 100000; i++)
 	{
 		for (ll j = 0; j < 3; j++)
+		{
 			DP[i][0].r[j] = DP[i - 1][0].r[j];
-
-		for (ll j = 0; j < 3; j++)
 			DP[i][0].sub[j] = DP[i - 1][0].sub[j];
+		}
 
 		DP[i][0].pa = DP[i - 1][0].pa;
 
@@ -179,9 +124,7 @@ void init()
 
 ll solve(string B)
 {
-	ll nu = 0;
-
-	ll total = 0;
+	ll nu = 0, total = 0;
 
 	bool flag = false;
 
@@ -195,22 +138,8 @@ ll solve(string B)
 		{
 			for (ll k = 0; k <= chtoi(B[i]); k++)
 			{
-				if (flag)
-				{
+				if (flag || (k != 0 && (k % 3) == 0) || ((ll)B.length() > 1 && (nu + k) % 3 == 0))
 					add_mod(total, 1);
-					continue;
-				}
-				if (k != 0 && (k % 3) == 0)
-				{
-					add_mod(total, 1);
-					continue;
-				}
-
-				if ((ll)B.length() > 1 && (nu + k) % 3 == 0)
-				{
-					add_mod(total, 1);
-					continue;
-				}
 			}
 			break;
 		}
@@ -223,7 +152,6 @@ ll solve(string B)
 				comp = (comp * 10 + chtoi(B[j])) % MOD;
 
 			add_mod(total, 1);
-
 			add_mod(total, comp);
 			break;
 		}
