@@ -5,15 +5,12 @@ using namespace std;
 
 string S, A, cpy;
 
-ll hei, L, R, cnt, alpha; // cnt는 달러의 개수
+ll hei, L, R, cnt, alpha;
 
-bool real_solve(ll x, ll roop, ll params)
+char real_solve(ll x, ll roop, ll params)
 {
 	if (roop == 0)
-	{
-		cout << S[params - 1];
-		return true;
-	}
+        return S[params - 1];
 
 	ll bef = (x - alpha) / cnt, pre = 0;
 
@@ -35,14 +32,11 @@ bool real_solve(ll x, ll roop, ll params)
 			Idx += 1;
 
 			if (Idx == params)
-			{
-				cout << A[i];
-				return true;
-			}
+                return A[i];
 		}
 	}
 
-	return false;
+	return '-';
 }
 
 void solve(ll params)
@@ -57,8 +51,7 @@ void solve(ll params)
 		Idx++;
 	} // pre는 구할 필요가 없는거다 그래서
 
-	if (!real_solve(nxt, Idx, params))
-		cout << "-";
+    cout << real_solve(nxt, Idx, params);
 }
 
 int main()
