@@ -4,6 +4,7 @@
 #define pll pair<ll, ll>
 #define x first
 #define y second
+#define all(q) (q).begin(), (q).end()
 
 using namespace std;
 
@@ -57,15 +58,11 @@ int main()
 {
 	cin >> N;
 
-	for (ll i = 0; i < N / 2; i++)
-		cin >> a1[i];
-	for (ll i = 0; i < N / 2; i++)
-		cin >> a2[i];
+	for (ll i = 0; i < N / 2; i++) cin >> a1[i];
+	for (ll i = 0; i < N / 2; i++) cin >> a2[i];
 
-	for (ll i = 0; i < N / 2; i++)
-		cin >> b1[i];
-	for (ll i = 0; i < N / 2; i++)
-		cin >> b2[i];
+	for (ll i = 0; i < N / 2; i++) cin >> b1[i];
+	for (ll i = 0; i < N / 2; i++) cin >> b2[i];
 
 	for (ll i = 0; i <= N / 2; i++)
 	{
@@ -73,14 +70,14 @@ int main()
 		solve_L(i, 0, 0, 0, 0, V1);
 		solve_R((N / 2) - i, 0, 0, 0, 0, V2, V3);
 
-		sort(V2.begin(), V2.end(), cmp);
-		sort(V3.begin(), V3.end());
+		sort(all(V2), cmp);
+		sort(all(V3));
 
 		for (auto e : V1)
 		{
 			ll rev = -e.x;
 
-			ll Idx = (ll)(lower_bound(V2.begin(), V2.end(), make_pair(rev, LLONG_MIN)) - V2.begin());
+			ll Idx = (ll)(lower_bound(all(V2), pll(rev, LLONG_MIN)) - V2.begin());
 
 			if (Idx >= 0 && Idx < (ll)V2.size()) // 오른쪽을 확인
 			{
@@ -89,17 +86,12 @@ int main()
 				if (ans > comp)
 				{
 					ans = comp;
-
-					total = e.y << (N / 2);
-					total |= V2[Idx].y;
+					total = (e.y << (N / 2)) | V2[Idx].y;
 				}
 				else if (ans == comp)
 				{
-					ll T1 = e.y << (N / 2);
-					T1 |= V2[Idx].y;
-
-					if (T1 > total)
-						total = T1;
+					if (((e.y << (N / 2)) | V2[Idx].y) > total)
+						total = ((e.y << (N / 2)) | V2[Idx].y);
 				}
 			}
 
@@ -110,27 +102,17 @@ int main()
 				if (ans > comp)
 				{
 					ans = comp;
-
-					total = e.y << (N / 2);
-					total |= V3[Idx - 1].y;
+					total = (e.y << (N / 2)) | V3[Idx - 1].y;
 				}
 				else if (ans == comp)
 				{
-					ll T1 = e.y << (N / 2);
-					T1 |= V3[Idx - 1].y;
-
-					if (T1 > total)
-						total = T1;
+					if (((e.y << (N / 2)) | V3[Idx - 1].y) > total)
+						total = ((e.y << (N / 2)) | V3[Idx - 1].y);
 				}
 			}
 		}
 	}
 
 	for (ll i = N - 1; i >= 0; i--)
-	{
-		if (total & (o << i))
-			cout << 1 << " ";
-		else
-			cout << 2 << " ";
-	}
+		total & (o << i) ? cout << 1 << " " : cout << 2 << " ";
 }
