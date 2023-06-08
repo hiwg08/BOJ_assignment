@@ -1,12 +1,11 @@
 #include <bits/stdc++.h>
+#define fastio ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 #define ll long long
 #define MOD (ll)(1e9 + 7)
 
 using namespace std;
 
 ll T, A, B, total;
-
-ll DP[50010]{ 0 };
 
 void add_mod(ll& ret, ll params)
 {
@@ -16,6 +15,8 @@ void add_mod(ll& ret, ll params)
 
 int main()
 {
+	fastio;
+
 	cin >> T;
 
 	while (T--)
@@ -24,7 +25,7 @@ int main()
 
 		total = 0;
 
-		memset(DP, 0, sizeof(DP));
+		ll DP[50010]{ 0 };
 
 		DP[0] = 1;
 
@@ -37,7 +38,7 @@ int main()
 			if (A + B < nu)
 				break;
 
-			for (ll j = A; j >= 0; j--) // 항상 최대치 (A가 곧 최대임)
+			for (ll j = A - i; j >= 0; j--)
 			{
 				if (j + i > 50000 || j + i > A)
 					continue;
