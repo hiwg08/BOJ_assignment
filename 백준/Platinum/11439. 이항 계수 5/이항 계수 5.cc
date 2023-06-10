@@ -45,20 +45,14 @@ void eratos()
 
 void factor(ll n, bool flag)
 {
-	vector<ll> ret;
-
 	while (n > 1)
 	{
-		ret.push_back(vis[n]);
-		n /= vis[n];
-	}
-
-	for (auto e : ret)
-	{
 		if (flag)
-			fir[e]++;
+			fir[vis[n]]++;
 		else
-			sec[e]++;
+			sec[vis[n]]++;
+
+		n /= vis[n];
 	}
 }
 
