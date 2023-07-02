@@ -1,65 +1,31 @@
 #include <bits/stdc++.h>
-#define pii pair<int, int>
-#define x first
-#define y second
 
 using namespace std;
 
-int N, M;
+long long N, M, Arr[101]{ 0 }, DP[101][101]{ 0 };
 
-int Arr[101]{ 0 };
-
-pii DP[101][101];
-
-void init()
+long long Solve(long long Idx, long long Interval)
 {
-	for (int i = 0; i <= 100; i++)
-	{
-		for (int j = 0; j <= 100; j++)
-			DP[i][j] = { -1, -1 };
-	}
-}
-
-pii solve(int Idx, int interval)
-{
-	if (interval == 0) // 여기는 무조건 된 것
-		return { 0, 1 };
-
 	if (Idx >= N)
 	{
-		if (interval > 0)
-			return { INT_MAX, 0 };
-		return { 0, 1 };
+		if (Interval != 0)
+			return INT_MIN;
+		return 0;
 	}
 
-	pii& ret = DP[Idx][interval];
+	long long& ret = DP[Idx][Interval];
 
-	if (ret.y != -1)
+	if (ret != 0x7f7f7f7f7f7f7f7f)
 		return ret;
 
-	ret.x = INT_MIN, ret.y = 0;
+	ret = Solve(Idx + 1, Interval);
 
-	int sum = 0;
+	long long temp = 0;
 
-	for (int i = Idx; i < N; i++)
+	for (long long i = Idx; i < N; i++)
 	{
-		sum += Arr[i];
-
-		pii T1 = solve(i + 2, interval - 1);
-
-		if (T1.y == 1) // 이 경우에만 값 갱신 허용.
-		{
-			ret.y = 1;
-			ret.x = max(ret.x, sum + T1.x);
-		}
-	}
-
-	pii T1 = solve(Idx + 1, interval);
-
-	if (T1.y == 1)
-	{
-		ret.y = 1;
-		ret.x = max(ret.x, T1.x);
+		temp += Arr[i];
+		ret = max(ret, Solve(i + 2, Interval - 1) + temp);
 	}
 
 	return ret;
@@ -72,7 +38,7 @@ int main()
 	for (int i = 0; i < N; i++)
 		cin >> Arr[i];
 
-	init();
+	memset(DP, 0x7f, sizeof(DP));
 
-	cout << solve(0, M).x;
+	cout << Solve(0, M) << '\n';
 }
