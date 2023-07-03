@@ -55,7 +55,7 @@ int main()
 			i++;
 		}
 	}
-	
+
 	if (total == LLONG_MAX)
 		total = -1;
 
