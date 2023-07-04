@@ -1,64 +1,69 @@
 #include <bits/stdc++.h>
-#define ll long long
+#define ll long long 
 
 using namespace std;
 
-ll N, one, two, three = 4;
+ll N, total;
 
-ll min_1 = LLONG_MAX, min_2 = LLONG_MAX, min_3 = LLONG_MAX;
+ll d[6]{ 0 };
 
-ll dice[6]{ 0 };
+ll a[2]{ 0, 5 }, b[2]{ 1, 4 }, c[2]{ 2, 3 };
 
-string sight_one[]{ "A", "B", "C", "D", "E", "F" };
-
-string sight_two[]{ "AC", "AB", "AD", "AE", "FC", "FB", "FD", "FE", "CB", "BD", "DE", "EC"};
-
-string sight_three[]{ "ACB", "ABD", "AED", "AEC", "FCB", "FBD", "FED", "FEC" };
-
-ll ctoll(char c)
+ll get_third()
 {
-	return (ll)(c - 65);
+	ll min_val = LLONG_MAX;
+
+	for (ll i = 0; i < 2; i++)
+	{
+		for (ll j = 0; j < 2; j++)
+		{
+			for (ll k = 0; k < 2; k++)
+				min_val = min(min_val, d[a[i]] + d[b[j]] + d[c[k]]);
+		}
+	}
+
+	return min_val;
 }
 
-void find_min(string* arr, ll loop, ll& ret)
+ll get_second()
 {
-	for (ll i = 0; i < loop; i++)
+	ll min_val = LLONG_MAX;
+
+	for (ll i = 0; i < 2; i++)
 	{
-		ll T1 = 0;
-
-		for (auto e : arr[i])
-			T1 += dice[ctoll(e)];
-
-		ret = min(ret, T1);
+		for (ll j = 1; j <= 4; j++)
+			min_val = min(min_val, d[a[i]] + d[j]);
 	}
+
+	for (ll j = 0; j < 2; j++)
+	{
+		for (ll k = 0; k < 2; k++)
+			min_val = min(min_val, d[b[j]] + d[c[k]]);
+	}
+
+	return min_val;
 }
 
 int main()
 {
 	cin >> N;
-
-	ll user = LLONG_MIN, sum = 0;
-
+	
 	for (ll i = 0; i < 6; i++)
-	{
-		cin >> dice[i];
-		user = max(user, dice[i]);
-		sum += dice[i];
-	}
+		cin >> d[i];
 
 	if (N == 1)
 	{
-		cout << sum - user << '\n';
+		sort(d, d + 6);
+
+		for (ll i = 0; i < 5; i++)
+			total += d[i];
+
+		cout << total;
 		exit(0);
 	}
 
-	one = (N - 2) * (N - 1) * 4 + (ll)pow(N - 2, 2);
+	ll fir = 4 * (N - 1) * (N - 2) + (N - 2) * (N - 2);
+	ll sec = 4 * (N - 2) + 4 * (N - 1);
 
-	two = 8 * (N - 2) + 4;
-
-	find_min(sight_one, 6, min_1);
-	find_min(sight_two, 12, min_2);
-	find_min(sight_three, 8, min_3);
-
-	cout << one * min_1 + two * min_2 + three * min_3 << '\n';
+	cout << (*min_element(d, d + 6) * fir) + (get_second() * sec) + (get_third() * 4);
 }
