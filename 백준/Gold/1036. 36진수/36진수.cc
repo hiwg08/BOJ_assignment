@@ -71,11 +71,9 @@ void input()
 		{
 			ll T1 = cnt[i][j] + carry;
 
-			ll quo = T1 / 36, remain = T1 % 36;
+			cnt[i][j] = T1 % 36;
 
-			cnt[i][j] = remain;
-
-			carry = quo;
+			carry = T1 / 36;
 		}
 	}
 }
@@ -86,13 +84,8 @@ int main()
 
 	sort(cnt, cnt + 36, cmp);
 
-	for (ll i = 0, nu = K; i < 36; i++, nu--)
-	{
-		if (nu == 0)
-			break;
-
+	for (ll i = 0, nu = K; (i < 36 && nu > 0); i++, nu--)
 		chk_z[cnt[i][60]] = true;
-	}
 
 	for (auto e : VS)
 	{
@@ -111,11 +104,9 @@ int main()
 	{
 		ll T1 = total[j] + carry;
 
-		ll quo = T1 / 36, remain = T1 % 36;
+		total[j] = T1 % 36;
 
-		total[j] = remain;
-
-		carry = quo;
+		carry = T1 / 36;
 	}
 
 	bool chk = false;
