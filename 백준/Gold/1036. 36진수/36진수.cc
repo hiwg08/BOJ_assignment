@@ -1,180 +1,134 @@
 #include <bits/stdc++.h>
 #define ll long long
-#define pls pair<ll, string>
-#define all(x) x.begin(), x.end()
-#define x first
-#define y second
 
 using namespace std;
 
-ll N, K, longest_L = LLONG_MIN;
+ll N, K;
 
-string longest_S = "", total = "";
+vector<ll> cnt[36];
 
-string pre_sum[36];
+string S;
 
-string expos_36[51];
+vector<string> VS;
 
-vector<pls> V;
+bool chk_z[36]{ 0 };
 
-vector<string> coll;
+ll total[60];
 
-bool change_z[36]{ 0 };
-
-ll cTolo(char a)
+bool cmp(vector<ll> a, vector<ll> b)
 {
-	return a >= 'A' ? (ll)(a - 55) : (ll)(a - 48);
-}
-
-char loToc(ll a)
-{
-	return a >= 10 ? (char)(a - 10 + 'A') : (char)(a + '0');
-}
-
-void change_str(string& params, string t)
-{
-	string tmp = "";
-
-	for (ll i = 0; i < (ll)t.length() - (ll)params.length(); i++)
-		tmp += '0';
-
-	tmp += params, params = tmp;
-}
-
-void solve_add(string& A, string B)
-{
-	string Ans = "";
-
-	(ll)A.length() < (ll)B.length() ? change_str(A, B) : change_str(B, A);
-
-	int carry = 0;
-
-	for (ll i = (ll)A.length() - 1; i >= 0; i--)
+	for (ll i = 59; i >= 0; i--)
 	{
-		ll pre = cTolo(A[i]) + cTolo(B[i]);
-
-		Ans += to_string((carry + pre) % 10);
-
-		carry = (carry + pre) / 10;
+		if (a[i] == b[i])
+			continue;
+		return a[i] > b[i];
 	}
 
-	if (carry == 1) Ans += '1';
-
-	reverse(all(Ans));
-
-	A = Ans;
+	return false;
 }
 
-string solve_mul(string fir, string sec)
+ll conv_c(char c)
 {
-	string Ans = "0";
-
-	vector<string> V;
-
-	ll carry = 1;
-
-	for (ll j = (ll)fir.length() - 1; j >= 0; j--)
-	{
-		string tmp = "0";
-
-		for (ll k = 0; k < cTolo(fir[j]) * carry; k++)
-			solve_add(tmp, sec);
-
-		carry *= 10;
-
-		V.push_back(tmp);
-	}
-
-	for (auto& e : V)
-		solve_add(Ans, e);
-
-	return Ans;
+	if (c >= '0' && c <= '9')
+		return (ll)(c - 48);
+	return (ll)(c - 55);
 }
 
-bool cmp(pls a, pls b)
+char conv_l(ll l)
 {
-	if ((ll)a.y.length() == (ll)b.y.length())
-		return a.y > b.y;
-	return (ll)a.y.length() > (ll)b.y.length();
+	if (l >= 0 && l <= 9)
+		return (char)(l + 48);
+	return (char)(l + 55);
 }
 
-void init()
-{
-	expos_36[0] = "1";
-
-	for (ll i = 1; i <= 50; i++)
-		expos_36[i] = solve_mul("36", expos_36[i - 1]);
-
-	for (ll i = 0; i < 36; i++)
-		pre_sum[i] = "0";
-}
-
-int main()
+void input()
 {
 	cin >> N;
 
-	init();
+	for (ll i = 0; i < 36; i++)
+	{
+		cnt[i].resize(61, 0);
+		cnt[i][60] = i;
+	}
 
 	for (ll i = 0; i < N; i++)
 	{
-		string A; cin >> A;
+		cin >> S;
 
-		coll.push_back(A);
+		VS.push_back(S);
 
-		longest_L = max((ll)A.length(), longest_L);
-
-		for (ll j = (ll)A.length() - 1; j >= 0; j--)
-			solve_add(pre_sum[cTolo(A[j])], solve_mul(to_string(35 - cTolo(A[j])), expos_36[(ll)A.length() - 1 - j]));
+		for (ll j = (ll)(S.length()) - 1, zari = 0; j >= 0; j--, zari++)
+			cnt[conv_c(S[j])][zari] += (35 - conv_c(S[j]));
 	}
-
-	for (ll i = 0; i < longest_L; i++)
-		longest_S += '0';
 
 	cin >> K;
 
 	for (ll i = 0; i < 36; i++)
-		V.push_back({ i, pre_sum[i] });
-
-	sort(all(V), cmp);
-
-	for (ll i = 0; i < (ll)V.size(); i++)
 	{
-		if (--K == -1) break;
+		ll carry = 0;
 
-		change_z[V[i].x] = true;
+		for (ll j = 0; j < 60; j++)
+		{
+			ll T1 = cnt[i][j] + carry;
+
+			ll quo = T1 / 36, remain = T1 % 36;
+
+			cnt[i][j] = remain;
+
+			carry = quo;
+		}
+	}
+}
+
+int main()
+{
+	input();
+
+	sort(cnt, cnt + 36, cmp);
+
+	for (ll i = 0, nu = K; i < 36; i++, nu--)
+	{
+		if (nu == 0)
+			break;
+
+		chk_z[cnt[i][60]] = true;
 	}
 
-	for (ll i = 0; i < (ll)coll.size(); i++)
+	for (auto e : VS)
 	{
-		for (auto& e : coll[i])
+		for (ll j = (ll)e.length() - 1, zari = 0; j >= 0; j--, zari++)
 		{
-			if (change_z[cTolo(e)])
-				e = 'Z';
+			if (chk_z[conv_c(e[j])])
+				total[zari] += 35;
+			else
+				total[zari] += conv_c(e[j]);
 		}
 	}
 
-	for (auto& e : coll) change_str(e, longest_S);
-
 	ll carry = 0;
 
-	for (ll i = longest_L - 1; i >= 0; i--)
+	for (ll j = 0; j < 60; j++)
 	{
-		ll Sum = 0;
-		for (ll j = 0; j < (ll)coll.size(); j++)
-			Sum += cTolo(coll[j][i]);
+		ll T1 = total[j] + carry;
 
-		total += loToc((carry + Sum) % 36);
+		ll quo = T1 / 36, remain = T1 % 36;
 
-		carry = (carry + Sum) / 36;
+		total[j] = remain;
+
+		carry = quo;
 	}
 
-	while (carry != 0)
+	bool chk = false;
+
+	for (ll j = 59; j >= 0; j--)
 	{
-		total += loToc(carry % 36);
-		carry /= 36;
+		if (total[j] != 0)
+			chk = true;
+
+		if (chk)
+			cout << conv_l(total[j]);
 	}
 
-	reverse(all(total));
-
-	cout << total << '\n';
+	if (!chk)
+		cout << 0;
 }
