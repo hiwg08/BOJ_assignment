@@ -178,8 +178,7 @@ void reconstruct(ll pos, ll bits)
 	{
 		pls T1 = comp[pos][R.x];
 
-		for (ll i = T1.x; i < (ll)V[R.x].length(); i++)
-			cout << V[R.x][i];
+		cout << T1.y;
 	}
 
 	reconstruct(R.x, R.y);
