@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#define fastio ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 #define ll long long
 #define pll pair<ll, ll>
 #define x first
@@ -31,6 +32,8 @@ priority_queue<ll> ori;
 
 int main()
 {
+	fastio;
+
 	cin >> N >> K >> M; V.resize(N);
 
 	for (auto& iv : V)
