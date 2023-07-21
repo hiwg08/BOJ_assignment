@@ -24,7 +24,7 @@ int main()
 {
 	cin >> N;
 
-	for (int i = 1; i <= 87654 && i < N; i++)
+	for (int i = 1; i <= 99999 && i < N; i++)
 	{
 		int L = i, R = N - i, bits = 0;
 
