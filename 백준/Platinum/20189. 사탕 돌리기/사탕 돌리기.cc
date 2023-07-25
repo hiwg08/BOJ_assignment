@@ -34,7 +34,7 @@ bool solve()
 
 	for (int i = 1; i <= N; i++)
 	{
-		if (nu[i] >= 1)
+		if (nu[i] != 0)
 			return false;
 	}
 
