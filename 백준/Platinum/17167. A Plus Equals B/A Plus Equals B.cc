@@ -1,7 +1,6 @@
 #include <bits/stdc++.h>
 #define fastio ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 #define ll long long
-#define o (ll)1
 
 using namespace std;
 
@@ -18,16 +17,10 @@ void solve()
 		ll T1 = A & (-A);
 		ll T2 = B & (-B);
 
-		if (T1 > T2)
-		{
-			for (ll i = 0; i < (ll)(log2(T1 / T2)); i++)
-				V.push_back(3);
-		}
-		else if (T1 < T2)
-		{
-			for (ll i = 0; i < (ll)(log2(T2 / T1)); i++)
-				V.push_back(0);
-		}
+		ll flag = T1 > T2 ? 3 : 0;
+
+		for (ll i = 0; i < (ll)(log2(max(T1, T2) / min(T1, T2))); i++)
+			V.push_back(flag);
 		
 		A >>= (ll)(log2(T1)), B >>= (ll)(log2(T2));
 	
