@@ -1,4 +1,5 @@
 import math
+import sys
 
 V = []
 
@@ -67,8 +68,8 @@ solve(A, B)
 for x, y in V:
     total += x
 
-print(total)
+sys.stdout.write(str(total) + '\n')
 
 for x, y in V:
     for j in range(x):
-        print(sta[y])
+        sys.stdout.write(sta[y] + '\n')
