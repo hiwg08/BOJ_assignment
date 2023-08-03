@@ -16,33 +16,27 @@ def solve(A, B):
                     V.append([(int(math.log2(B / A))), 0])
                     A = B
                 else:
-                    V.append([(int(math.log2(A / B))), 0])
+                    V.append([(int(math.log2(A / B))), 3])
                     B = A
                 continue
 
-            T1 = A
-            T2 = B
+            T1 = A & (-A)
+            T2 = B & (-B)
             c1 = 0 
             c2 = 0
 
-            while(T1 % 2 == 0):
-                T1 >>= 1
-                c1 += 1
-
-            while(T2 % 2 == 0):
-                T2 >>= 1
-                c2 += 1
-
-            if (c1 != c2):
-                if (c1 < c2):
-                    A <<= (c2 - c1)
-                    V.append([c2 - c1, 0])
-                
-                else:
-                    B <<= (c1 - c2)
-                    V.append([c1 - c2, 3])
-
             if (T1 > T2):
+                B *= int(T1 / T2)
+                V.append([int(math.log2(int(T1 / T2))), 3])
+            
+            elif (T1 < T2):
+                A *= int(T2 / T1)
+                V.append([int(math.log2(int(T2 / T1))), 0])
+
+            c1 = int(A / max(T1, T2))
+            c2 = int(B / max(T1, T2))
+
+            if (c1 > c2):
                 A += B
                 V.append([1, 1])
 
