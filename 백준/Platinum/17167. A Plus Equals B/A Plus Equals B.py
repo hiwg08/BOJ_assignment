@@ -41,7 +41,7 @@ def solve(A, B):
                 A += B
                 V.append([1, 1])
 
-            else:
+            elif (c1 < c2):
                 B += A
                 V.append([1, 2])
 
