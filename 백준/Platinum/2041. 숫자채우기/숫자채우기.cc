@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #define ll long long
+#define fastio ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 
 using namespace std;
 
@@ -55,8 +56,8 @@ void solve()
 {
 	bool flag = true;
 
-	for (ll j = 0; j < M; j++)	
-	{ 
+	for (ll j = 0; j < M; j++)
+	{
 		if (j != 0)
 		{
 			if (j % 2 != 0)
@@ -94,6 +95,8 @@ void solve()
 
 int main()
 {
+	fastio;
+
 	cin >> N >> M; // 일단 3 * 8 격자를 기준으로.
 
 	precomp();
