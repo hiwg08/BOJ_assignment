@@ -1,7 +1,11 @@
 #include <bits/stdc++.h>
 #define fastio ios_base::sync_with_stdio(false); cin.tie(NULL); cout.tie(NULL);
 #define ll long long
+#define vl vector<ll>
+#define pb push_back
 #define o (ll)1
+#define x first
+#define y second
 
 using namespace std;
 
@@ -9,56 +13,66 @@ ll N, M;
 
 ll ans[500001]{ 0 };
 
-void recomplish(ll R1, ll R2, string S)
+void solve(vl a, vl b, ll pos)
 {
-	ll T1 = R1, T2 = R2;
-
-	for (ll i = (ll)S.length() - 1; i >= 0; i--)
+	if ((ll)a.size() == 1)
 	{
-		T1 <<= 1, T2 <<= 1;
-
-		if (S[i] == '1')
-			T1 |= 1, T2 |= 1;
-	}
-
-	ans[T1] = T2;
-}
-
-void solve(ll L1, ll R1, ll L2, ll R2, string S)
-{
-	ll sz = R1 - L1 + 1;
-
-	if (sz == 1)
-	{
-		recomplish(R1, R2, S);
+		ans[a[0]] = b[0];
 		return;
 	}
 
-	if ((sz & o) == 1) // 홀수일 때
-	{
-		if ((L2 & o) == 1)
-		{
-			recomplish(R1, R2, S);
+	vl la, lb, ra, rb;
 
-			solve(L1 >> 1, (R1 - 1) >> 1, L2 >> 1, (R2 - 2) >> 1, S + '1');
-			solve(L1 >> 1, (R1 - 1) >> 1, (L2 + 1) >> 1, (R2 - 1) >> 1, S + '0');
-			return;
+	if (((ll)a.size() & 1) == 1)
+	{
+		if ((b[0] & pos) == pos) // 홀수일 때
+		{
+			for (ll i = 1; i < (ll)a.size(); i += 2)
+			{
+				la.pb(a[i]);
+				lb.pb(b[i + 1]);
+			}
+			
+			ra.pb(a[0]);
+			rb.pb(b[0]);
+
+			for (ll i = 2; i < (ll)a.size(); i += 2)
+			{
+				ra.pb(a[i]);
+				rb.pb(b[i - 1]);
+			}
+		}
+		else
+		{
+			for (ll i = 0; i < (ll)a.size(); i += 2)
+			{
+				la.pb(a[i]);
+				lb.pb(b[i]);
+			}
+			for (ll i = 1; i < (ll)a.size(); i += 2)
+			{
+				ra.pb(a[i]);
+				rb.pb(b[i]);
+			}
+		}
+	}
+	else
+	{
+		for (ll i = 0; i < (ll)a.size(); i += 2)
+		{
+			la.pb(a[i]);
+			(b[0] & pos) == pos ? lb.pb(b[i + 1]) : lb.pb(b[i]);
 		}
 
-		solve(L1 >> 1, R1 >> 1, L2 >> 1, R2 >> 1, S + '0');
-		solve(L1 >> 1, (R1 - 1) >> 1, L2 >> 1, (R2 - 1) >> 1, S + '1');
-		return;
+		for (ll i = 1; i < (ll)a.size(); i += 2)
+		{
+			ra.pb(a[i]);
+			(b[0] & pos) == pos ? rb.pb(b[i - 1]) : rb.pb(b[i]);
+		}
 	}
 
-	if ((L2 & o) == 0)
-	{
-		solve(L1 >> 1, R1 >> 1, L2 >> 1, R2 >> 1, S + '0');
-		solve(L1 >> 1, R1 >> 1, L2 >> 1, R2 >> 1, S + '1');
-		return;
-	}
-
-	solve(L1 >> 1, R1 >> 1, L2 >> 1, (R2 - 1) >> 1, S + '1');
-	solve(L1 >> 1, R1 >> 1, (L2 + 1) >> 1, R2 >> 1, S + '0');
+	solve(la, lb, pos << 1);
+	solve(ra, rb, pos << 1);
 }
 
 int main()
@@ -67,7 +81,12 @@ int main()
 
 	cin >> N >> M;
 
-	solve(0, N - 1, M, M + N - 1, "");
+	vl a, b;
+
+	for (ll i = 0; i <= N - 1; i++)
+		a.pb(i), b.pb(i + M);
+
+	solve(a, b, 1);
 
 	for (ll i = 0; i <= N - 1; i++)
 		cout << i << " " << ans[i] << '\n';
