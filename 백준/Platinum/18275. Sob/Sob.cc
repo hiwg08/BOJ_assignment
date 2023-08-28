@@ -7,6 +7,7 @@
 #define x first
 #define y second
 
+
 using namespace std;
 
 ll N, M;
