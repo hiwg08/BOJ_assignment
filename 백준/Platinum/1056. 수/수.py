@@ -11,7 +11,7 @@ def dev_con(params, pows):
 
     return T1 * T1
 
-def mina(params, k):
+def mina(params, k, flag):
     lo = 1
     hi = 1000000000000000000
 
@@ -20,27 +20,10 @@ def mina(params, k):
 
         chk = dev_con(mid, k)
 
-        if (chk <= params):
-            lo = mid
-        else:
-            hi = mid
+        if (chk <= params): lo = mid
+        else: hi = mid
 
-    return lo
-
-def maxma(params, k):
-    lo = 0
-    hi = 1000000000000000000
-
-    while (lo + 1 < hi):
-        mid = (lo + hi) >> 1
-
-        chk = dev_con(mid, k)
-
-        if (chk <= params):
-            lo = mid
-        else:
-            hi = mid
-
+    if (flag): return lo
     return hi
 
 
@@ -51,15 +34,15 @@ def solve(Idx):
 
     flag = Idx in dp
 
-    if (flag == True):
+    if (flag):
         return dp[Idx]
     
     dp[Idx] = Idx - 1
     
     for i in range(1, 62):
-        T1 = mina(Idx, i)
+        T1 = mina(Idx, i, True)
         d1 = dev_con(T1, i)
-        T2 = maxma(Idx, i)
+        T2 = mina(Idx, i, False)
         d2 = dev_con(T2, i)
 
         if (T1 >= Idx or T2 >= Idx):
