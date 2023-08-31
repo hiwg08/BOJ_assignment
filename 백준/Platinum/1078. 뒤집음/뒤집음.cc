@@ -1,3 +1,6 @@
+// sol : number_theory, prefix_sum
+// core idea : to narrow possible range of D
+
 #include <bits/stdc++.h>
 #define ll long long
 
