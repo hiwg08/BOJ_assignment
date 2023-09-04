@@ -5,8 +5,6 @@ using namespace std;
 
 ll arr[1010]{ 0 };
 
-ll reall[1010]{ 0 };
-
 ll total;
 
 ll gcd(ll a, ll b)
@@ -29,11 +27,19 @@ void precomp()
 			if (gcd(i, j) == 1)
 			{
 				total++;
-				reall[j]++;
 				arr[j]++;
 			}
 		}
 	}
+}
+
+void narrow_range(ll& L, ll& R)
+{
+	while (arr[R] == 0 && R >= 0) R--;
+
+	L = R - 1;
+
+	while (arr[L] == 0 && L >= 0) L--;
 }
 
 void solve()
@@ -50,47 +56,27 @@ void solve()
 			{
 				if (arr[R] == 0)
 				{
-					if (arr[L] == 0)
-						left_first = false;
-					else
-						left_first = true;
+					arr[L] == 0 ? left_first = false : left_first = true;
 
-					while (arr[R] == 0 && R >= 0)
-						R--;
-
-					L = R - 1;
-
-					while (arr[L] == 0 && L >= 0)
-						L--;
+					narrow_range(L, R);
 					
 					break;
 				}
 
 				arr[R]--, total--;
 				cout << R << " ";
-				V.push_back(R);
 
 				if (arr[L] == 0)
 				{
-					if (arr[R] != 0)
-						left_first = true;
-					else
-						left_first = false;
+					arr[R] != 0 ? left_first = true : left_first = false;
 
-					while (arr[R] == 0 && R >= 0)
-						R--;
-
-					L = R - 1;
-
-					while (arr[L] == 0 && L >= 0)
-						L--;
+					narrow_range(L, R);
 
 					break;
 				}
 
 				arr[L]--, total--;
 				cout << L << " ";
-				V.push_back(L);
 			}
 		}
 		else
@@ -99,47 +85,27 @@ void solve()
 			{
 				if (arr[L] == 0)
 				{
-					if (arr[R] != 0)
-						left_first = true;
-					else
-						left_first = false;
+					arr[R] != 0 ? left_first = true : left_first = false;
 
-					while (arr[R] == 0 && R >= 0)
-						R--;
+					narrow_range(L, R);
 
-					L = R - 1;
-
-					while (arr[L] == 0 && L >= 0)
-						L--;
 					break;
 				}
 
 				arr[L]--, total--;
 				cout << L << " ";
-				V.push_back(L);
 
 				if (arr[R] == 0)
 				{
-					if (arr[L] == 0)
-						left_first = false;
-					else
-						left_first = true;
+					arr[L] == 0 ? left_first = false : left_first = true;
 
-					while (arr[R] == 0 && R >= 0)
-						R--;
+					narrow_range(L, R);
 
-					L = R - 1;
-
-					while (arr[L] == 0 && L >= 0)
-						L--;
 					break;
 				}
 
 				arr[R]--, total--;
 				cout << R << " ";
-				V.push_back(R);
-
-				reall[R]--;
 			}
 		}
 	}
