@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #define ll long long
+#define MAX (ll)(2147483647)
 
 using namespace std;
 
@@ -26,7 +27,7 @@ bool check(ll standard)
 
 ll solve()
 {
-	ll lo = 0, hi = (ll)(1) << 32;
+	ll lo = 0, hi = MAX;
 
 	while (lo + 1 < hi)
 	{
