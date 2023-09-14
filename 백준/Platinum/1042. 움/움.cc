@@ -1,22 +1,21 @@
 #include <bits/stdc++.h>
 #define ll long long
+#define o (ll)1
 #define MOD (ll)(1e9 + 7)
+#define x first
+#define y second
 
 using namespace std;
 
+ll M;
+
 string S;
 
-ll M, size_to;
+ll pos[4][2501]{ 0 };
 
-ll cnt = 0, ano_cnt = 0;
+ll dp[2501]{ 0 };
 
-map<string, ll> opti;
-
-map<string, ll> ss;
-
-string sta[51];
-
-ll DP[2501]{ 0 };
+vector<pair<string, string>> V;
 
 void add_mod(ll& ret, ll params)
 {
@@ -24,48 +23,97 @@ void add_mod(ll& ret, ll params)
 	ret %= MOD;
 }
 
+ll ch_in(char c)
+{
+	if (c == 'A')
+		return 0;
+	if (c == 'C')
+		return 1;
+	if (c == 'G')
+		return 2;
+	return 3;
+}
+
+void precomp()
+{
+	for (ll i = 0; i < (ll)S.length(); i++)
+	{
+		ll vis = 0;
+
+		for (ll j = i; j < (ll)S.length(); j++)
+		{
+			if (vis == 15)
+				break;
+
+			ll a = ch_in(S[j]);
+
+			if ((vis & (o << a)) == 0)
+			{
+				vis |= o << a;
+				pos[a][i] = j;
+			}
+		}
+	}
+}
+
+ll find_dna(ll Idx, string params)
+{
+	for (ll i = 0; i < 3; i++)
+	{
+		if (Idx >= (ll)S.length())
+			return -1;
+		if (pos[ch_in(params[i])][Idx] == -1)
+			return -1;
+
+		Idx = pos[ch_in(params[i])][Idx] + 1;
+	}
+
+	return Idx;
+}
+
 ll solve(ll Idx)
 {
-	if (Idx >= size_to)
+	if (Idx >= (ll)S.length())
 		return 0;
 
-	ll& ret = DP[Idx];
+	ll& ret = dp[Idx];
 
 	if (ret != -1)
 		return ret;
 
 	ret = 0;
 
-	ll Arr[51]{ 0 };
+	string chk = ".";
 
-	bool chk[51]{ 0 };
+	ll fina = LLONG_MAX;
 
-	for (ll i = Idx; i < size_to; i++)
+	for (ll i = 0; i < M; i++)
 	{
-		// 현재 문자는 S[i]이다.
-		for (ll j = 0; j < M; j++)
+		if (chk != V[i].y)
 		{
-			ll pre = Arr[j];
-
-			if (pre >= 3)
-				continue;
-
-			if (sta[j][pre] == S[i])
+			if (chk != ".")
 			{
-				Arr[j]++;
-
-				if (Arr[j] == 3)
+				if (fina != LLONG_MAX)
 				{
-					if (!chk[opti[sta[j]]])
-					{
-						chk[opti[sta[j]]] = true;
-
-						add_mod(ret, solve(i + 1));
-						add_mod(ret, 1);
-					}
+					add_mod(ret, 1);
+					add_mod(ret, solve(fina));
 				}
 			}
+
+			fina = LLONG_MAX;
+			chk = V[i].y;
 		}
+
+		ll is_exist = find_dna(Idx, V[i].x);
+
+		if (is_exist != -1)
+			fina = min(fina, is_exist);
+	}
+
+	if (fina != LLONG_MAX)
+	{
+		add_mod(ret, 1);
+		add_mod(ret, solve(fina));
 	}
 
 	return ret;
@@ -75,24 +123,20 @@ int main()
 {
 	cin >> S;
 
-	cin >> M;
+	cin >> M; V.resize(M);
+	
+	for (auto& iv : V)
+		cin >> iv.x >> iv.y;
 
-	size_to = (ll)S.length();
+	sort(V.begin(), V.end(), [&](pair<string, string> a, pair<string, string> b) {
+		return a.y < b.y;
+	});
 
-	for (ll i = 0; i < M; i++)
-	{
-		string a, b; cin >> a >> b;
+	memset(pos, -1, sizeof(pos));
 
-		if (ss.find(b) == ss.end())
-		{
-			cnt++;
-			ss[b] = cnt;
-		}
-		opti[a] = ss[b];
-		sta[i] = a;
-	}
+	memset(dp, -1, sizeof(dp));
 
-	memset(DP, -1, sizeof(DP));
+	precomp();
 
 	cout << solve(0);
 }
