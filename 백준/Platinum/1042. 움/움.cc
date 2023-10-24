@@ -1,3 +1,8 @@
+// problem : 1042 - dna
+// written by bliss08
+// used algorithm : dp, string
+// core idea : find optimal substructure --> ignore duplicated codon + find start index of codon to amino acid as small as possible
+
 #include <bits/stdc++.h>
 #define ll long long
 #define o (ll)1
