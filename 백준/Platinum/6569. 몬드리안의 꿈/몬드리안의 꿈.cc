@@ -5,11 +5,11 @@
 
 using namespace std;
 
-ll DP[12][1 << 12]{ 0 };
+ll DP[11][1 << 11]{ 0 };
 
 ll H, W, total;
 
-void reconstruct(ll Idx, ll start, ll bit, ll standard) // start가 H를 넘길 때까지 반복. 이 함수는 나머지 인덱스에도 똑같이 적용시킨다.
+void reconstruct(ll Idx, ll start, ll bit, ll standard)
 {
 	DP[Idx][bit] += standard;
 
@@ -40,7 +40,7 @@ void init()
 
 	for (ll i = 1; i < W; i++)
 	{
-		for (ll j = 0; j <= (o << H) - 1; j++) // 그니까 얘는 전 상태의 bit라는 거지?
+		for (ll j = 0; j <= (o << H) - 1; j++)
 		{
 			ll rev = (o << H) - 1 - j;
 
@@ -48,7 +48,7 @@ void init()
 		}
 	}
 
-	total = DP[W - 1][(o << H) - 1];
+    cout << DP[W - 1][(o << H) - 1] << '\n';
 }
 
 int main()
@@ -63,7 +63,5 @@ int main()
 			break;
 
 		init();
-
-		cout << total << '\n';
 	}
 }
