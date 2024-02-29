@@ -42,14 +42,10 @@ pll solve(ll Idx, ll bef)
 
 	ll sum = 0;
 
-	bool flag = false;
-
 	for (auto& e : Tree[Idx])
 	{
 		if (e.x == bef)
 			continue;
-
-		flag = true;
 
 		pll T1 = solve(e.x, Idx);
 
