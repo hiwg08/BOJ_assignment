@@ -6,60 +6,42 @@
 
 using namespace std;
 
-ll N, need, sum, total = LLONG_MAX;
+ll N, M, standard = -1, accu = 0, repeat = 0, tot = LLONG_MAX;
 
 vector<pll> V;
 
-vector<ll> price;
-
-bool cmp(pll a, pll b) // x를 무게, y를 가격
-{
-	if (a.y == b.y)
-		return a.x < b.x;
-	return a.y > b.y;
-}
-
 int main()
 {
-	cin >> N >> need;
+	cin >> N >> M; V.resize(N);
 
-	for (ll i = 0, a, b; i < N; i++) // 순서대로 무게, 가격
-	{
-		cin >> a >> b;
-		V.push_back({ a, b });
-		price.push_back(b);
-		sum += a;
-	}
+	for (auto& iv : V)
+		cin >> iv.x >> iv.y;
 
-	sort(price.begin(), price.end());
-
-	sort(V.begin(), V.end(), cmp);
+	sort(V.begin(), V.end(), [&](auto a, auto b) {
+		if (a.y == b.y)
+			return a.x > b.x;
+		return a.y < b.y;
+	});
 
 	for (ll i = 0; i < N; i++)
 	{
-		ll cnt = (ll)(lower_bound(price.begin(), price.end(), V[i].y + 1) - price.begin()) - (ll)(lower_bound(price.begin(), price.end(), V[i].y) - price.begin());
-
-		while (true)
+		if (standard != V[i].y)
 		{
-			if (cnt == 0)
-			{
-				i--;
-				break;
-			}
-
-			if (sum >= need)
-				total = min(total, cnt * V[i].y);
-
-			cnt--;
-			sum -= V[i].x;
-			i++;
+			standard = V[i].y;
+			repeat = 0;
 		}
+
+		repeat++;
+		accu += V[i].x;
+		
+		if (accu >= M)
+			tot = min(tot, repeat * V[i].y);
 	}
 
-	if (total == LLONG_MAX)
-		total = -1;
+	if (tot == LLONG_MAX)
+		tot = -1;
 
-	cout << total;
+	cout << tot;
+
+	return 0;
 }
-
-// 무게가 같으면? 가격은 어떻게 설정하는 게 좋을까?
